@@ -12,5 +12,31 @@ services:
       LABELS: foxy
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - '/tmp/runner:/tmp/runner'
+      - '/tmp/runner_foxy:/tmp/runner'
+    restart: always
+  galactic-runner:
+    build:
+      context: images
+      dockerfile: Dockerfile.galactic
+    environment:
+      REPO_URL: https://github.com/nonanonno/ros2_d
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+      RUNNER_WORKDIR: /tmp/runner/work
+      LABELS: galactic
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/tmp/runner_galactic:/tmp/runner'
+    restart: always
+  rolling-runner:
+    build:
+      context: images
+      dockerfile: Dockerfile.rolling
+    environment:
+      REPO_URL: https://github.com/nonanonno/ros2_d
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+      RUNNER_WORKDIR: /tmp/runner/work
+      LABELS: rolling
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/tmp/runner_rolling:/tmp/runner'
     restart: always
