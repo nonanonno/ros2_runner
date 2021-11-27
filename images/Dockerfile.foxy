@@ -1,0 +1,35 @@
+FROM myoung34/github-runner:ubuntu-focal
+
+ARG ros_distro="foxy"
+
+# upgrade image
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
+# install ros
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  curl \
+  gnupg2 \
+  lsb-release \
+  locales \
+  && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN locale-gen en_US en_US.UTF-8 && \
+  update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
+  sh -c 'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list' && \
+  apt-get update && apt-get install -yq \
+  ros-${ros_distro}-ros-base && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+# install packages for dstep
+RUN apt-get update && apt-get install -y \
+  libclang-10-dev \
+  clang-10 \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 1

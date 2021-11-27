@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  foxy-runner:
+    build:
+      context: images
+      dockerfile: Dockerfile.foxy
+    environment:
+      REPO_URL: https://github.com/nonanonno/ros2_d
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+      RUNNER_WORKDIR: /tmp/runner/work
+      LABELS: foxy
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/tmp/runner:/tmp/runner'
+    restart: always
